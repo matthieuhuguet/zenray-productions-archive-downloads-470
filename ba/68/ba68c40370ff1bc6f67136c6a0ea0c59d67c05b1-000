@@ -1,0 +1,43 @@
+# materials-copernicus-exercize : feedback, prompts and rules (append only)
+
+## Prompt log
+- 2026-09-18 11:47 : Exercice : je reproduis moi-meme un materiau brique dans Copernicus, SANS VEX, en partant de mon oeil. Ordre impose : height, puis normal et AO, puis roughness, puis base color. Tu fournis un guide etape par etape, on avance petit a petit, le but est de comprendre.
+- 2026-09-18 12:04 : je branche ou le remap du coup ? A chaque prochain prompt, note chacun de mes prompts dans FEEDBACK.md.
+- 2026-09-18 12:07 : 1 line : je comprends pas pourquoi sur le channel extract il prend uniquement la moitie du canal ?
+- 2026-09-18 12:09 : 1 line : oui ca marche -1 sur remap mais ca cree des lignes blanches, il faudrait les enlever c est bizarre ? Rappelle-moi ensuite ce que fait channel extract.
+- 2026-09-18 12:12 : Sur fg ou mask alors le branchement ? Feedback : tu manques de precision, c est la premiere fois que je fais un materiau, il faut me guider vraiment de maniere detaillee.
+- 2026-09-18 12:15 : ca marche, etape suivante go (etape 2 le canal validee)
+- 2026-09-18 13:32 : Remap2 : avec Use Ramp ca fait une croix, sans ramp ca fait une tuile mais inversee. Idee : enlever le ramp et jouer sur output min/max. 1 paragraphe max.
+- 2026-09-18 14:10 : ok mais c est toujours inverse ? ca marche pas vraiment ton commentaire precedent, ca cree quelque chose de different
+- 2026-09-18 14:14 : ca marche, etape suivante go (etape 3 recouvrement validee)
+- 2026-09-18 14:21 : ca marche, etape suivante go, mais on voit quasi aucune difference a 0.8, j ai mis min a 0.66 sinon on ne voyait rien. feedback-stack, go suivant
+- 2026-09-18 14:29 : ca marche, etape suivante go. J ai mis 0.015 pour element size et output min 0.66 pour plus reveler le grain.
+- 2026-09-18 14:40 : Rampe en marche d escalier : pas clair du tout, recommence l explication en 1 ligne.
+- 2026-09-18 14:52 : Pour l instant ca marche pas, entre les 2 multiply ca marche pas vraiment, les bords ebreches.
+- 2026-09-18 14:58 : ca marche, etape suivante go ! J ai mis 0.0033 au blur pour avoir des bords ebreches. go la suite.
+- 2026-09-18 15:15 : Non ca marche pas du tout : les random mono ne distribuent pas vraiment au hasard, des tuiles cassees se collent ; le cellular noise est moche pour casser les tuiles ou trop petit ; ca fait moche.
+- 2026-09-18 15:23 : Reprends le contexte et verifie que le MCP fonctionne et voit mon graph. Le but est de m apprendre le texturing petit a petit dans cette conversation. Reprendre a l etape actuelle, suivre zenray-houdini et claude-md-global, noter chaque feedback dans FEEDBACK.md et indexer les fichiers feedback dans CLAUDE.md global.
+- 2026-09-18 15:35 : Mon mac a plante, via les feedbacks reconstruis le graph rapidement, go.
+- 2026-09-19 14:18 : Retrouve le graphe actuel, on a beaucoup progresse depuis, c est indexe dans le skill zenray-houdini ; ouvre et comprends le graphe, on a bientot fini la height.
+- 2026-09-19 14:33 : Verifie que chaque feedback est note. Il faut tester la height sur une plane pour voir si le denivele marche comme des tuiles, comme sur la ref. Les tuiles de displacement manquent de contraste entre le fond et les tuiles, le rapport de gris doit ressortir. Crope la planche de ref en 5 images et refere-toi a la height. Le but est d avancer la height.
+
+## Order of work
+- 2026-09-18 11:47 : Ordre de travail : 1 height, 2 normal et AO, 3 roughness, 4 base color.
+
+## Standing rules
+- 2026-09-18 11:47 : Exercice de Matthieu : il construit, je guide. Aucun noeud pose a sa place sans qu il le demande, aucun VEX, et une etape a la fois.
+- 2026-09-18 12:04 : Chaque prompt de Matthieu entre dans FEEDBACK.md avant la reponse, sans exception.
+- 2026-09-18 12:12 : Guidage niveau debutant : pour chaque noeud, dire quelle sortie va sur quelle entree par son NOM exact, quels parametres regler avec leur valeur, et ce que l on doit voir apres. Jamais un raccourci qui suppose une connaissance deja acquise.
+
+## Log
+- 2026-09-18 11:48 : Mesures de la reference : periode verticale 119 px sur 960 soit 8 tuiles, periode horizontale 95 px sur 192 soit 4 colonnes sur un carre, rapport d une tuile 1,25. Guide ecrit dans GUIDE_height_tuiles.md.
+- 2026-09-18 12:00 : Correction de mesure : la bande de reference fait 384 px, la periode horizontale reelle est 190 px et la verticale 238 px. Sur un carre de 1920 : 10 colonnes et 8 rangees, rapport 1,25. Le guide disait 4 colonnes, c etait faux.
+- 2026-09-18 12:15 : Etape 2 validee par Matthieu : canal en cloche, channelextract X sur uv, remap Input Min -1, blend bg=remap fg=tiles mode Multiply.
+- 2026-09-18 14:14 : Etape 3 validee : channelextract Y sur uv, remap sans rampe Input -1..1, Output Min 0.55 Max 1, blend multiply sur le canal. Mesure : dans une tuile l UV vertical vaut -1 en haut et +1 en bas.
+- 2026-09-18 14:21 : Etape 4 validee : randommono, id vers seed, Per Pixel decoche, blend multiply. Reglage de Matthieu : min 0.66, parce que 0.8 ne se voyait presque pas. Retenir : sur une height, une variation se juge a l oeil, les valeurs de depart que je donne sont trop timides.
+- 2026-09-18 14:29 : Etape 5a validee (grain terre cuite) : fractalnoise element size 0.015, remap Compute Range, output 0.66 a 1, blend multiply. Encore une fois Matthieu pousse plus fort que ma valeur de depart (0.85).
+- 2026-09-18 14:53 : Diagnostic eclats mesure : remap5 (taches) ne descend jamais sous 0.66, donc le multiply garde la bande partout ; blur1 a 0.0025 donne une bande trop fine.
+- 2026-09-18 14:58 : Etape 5b validee (eclats) : blur 0.0033, remap cloche, fractalnoise 0.05 + remap marche 0.55/0.65 output 0..1, multiply, subtract mask 0.5.
+- 2026-09-18 15:15 : Cassures v1 rejetee : Voronoi en mosaique = geometrique et laid, trous noirs purs car subtract trop fort, tuiles cassees collees. Refaire : cassure organique (fractalnoise) placee au BORD BAS de quelques tuiles, et creuser d un cran seulement.
+- 2026-09-18 15:23 : MCP natif visible et appel live reussi, Houdini 22.0.368, LouisianaBayou.hiplc. Graphe /obj/Cop_M_RoofTiles_01/Cop_M_RoofTiles_01 : 25 noeuds ; blendSept selectionne, mask 0.6 ; remap6 seuils 0.80/0.82 ; randommono2 seed 66. Export current-height-20260918.png inspecte avec la reference : cassures polygonales noires, branche corrective pas encore construite. Aucun parametre du graphe modifie. Prochaine manipulation proposee : masque du bord bas seul, nouveau remap depuis channelextract2/channel vers source, Input -1..1, Output 0..1, rampe lineaire (0,0),(0.65,0),(1,1). Une soustraction constante ne reconstruit pas la tuile inferieure ; 0.3 ne garantit donc pas un recouvrement correct.
+- 2026-09-18 15:37 : Reconstruction apres crash : la derniere sauvegarde du hip (11:33) precedait l exercice, tout etait perdu. Graphe refait par Scripts/RebuildRoofTilesHeight.py avec les valeurs validees des etapes 1 a 5b, 18 noeuds, zero erreur, hip sauve. Piege trouve : randommono est en mode ramp, donc min/max sont ignores ; le 0.66 de Matthieu vit dans la float ramp. Etape 5c non reconstruite : la v1 etait rejetee, la v2 reste a faire par Matthieu.
